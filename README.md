@@ -7,12 +7,18 @@ Quick Examples
 	from milkman.dairy import milkman
 	from myapp.models import Video, Editor
 	
-	#I just want a random video in the db to test with
+	# I just want a random video in the db to test with
 	v = milkman.deliver(Video)
 	
-	#I want a video with a particular editor
+	# I want a video with a particular editor
 	e = milkman.deliver(Editor)
 	v = milkman.deliver(Video, editor=e)
+
+    # I want a video with a random editor from exists
+	v = milkman.deliver(Video, editor=milkman.random)
+
+    # Force optional field generation
+    v = milkman.deliver(Video, description=milkman.random)
 	
 	
 Development
@@ -30,8 +36,7 @@ http://pypi.python.org/pypi/virtualenvwrapper
 Running Tests
 -------------
 
-    cd testapp
-    ./manage.py test
+    python setup.py test
   
 
 Known Issues
