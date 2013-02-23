@@ -182,10 +182,19 @@ class MilkTruck(object):
                 self.needs_generated_value(f)]
 
     def needs_generated_value(self, field):
-        return hasattr(field, 'has_default') and \
-               not field.has_default() and \
-               not field.blank and \
-               not field.null
+        # no need to generate if the field has a default value
+        has_default = hasattr(field, 'has_default') and field.has_default()
+        if has_default:
+            return False
+
+        # In Oracle, any CharField descendant will be nullable.
+        # In other databases, no CharField descendant will be nullable.
+        # We can use blank as the arbiter of requiredness for CharFields.
+        if isinstance(field, models.CharField):
+            return not field.blank
+        else:
+            # generate if both blank and null are False
+            return not field.blank and not field.null
 
 
 class Milkman(object):
