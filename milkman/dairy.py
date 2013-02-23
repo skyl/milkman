@@ -29,7 +29,7 @@ class MilkmanRegistry(object):
         self.add_generator(models.DecimalField,
             generators.random_decimal_maker)
         self.add_generator(models.EmailField,
-            generators.email_generator('user', 'example.com'))
+            generators.random_email_generator)
         self.add_generator(models.FloatField,
             generators.random_float_maker)
         self.add_generator(models.IntegerField,

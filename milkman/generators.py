@@ -24,15 +24,6 @@ def loop(func):
     return loop_generator
 
 
-def sequence(func):
-    def sequence_generator(*args, **kwargs):
-        i = 0
-        while 1:
-            i += 1
-            yield func(i, *args, **kwargs)
-    return sequence_generator
-
-
 def default_gen_maker(field):
     return loop(lambda: '')
 
@@ -104,13 +95,16 @@ def random_decimal_maker(field):
     return loop(gen)
 
 
-def email_generator(addr, domain):
-    template = EMAIL_TEMPLATE % (addr, domain)
+def random_unicode(n):
+    return "".join(unichr(random.randint(0, 10000)) for i in range(n))
 
-    def email_gen_maker(field):
-        return sequence(lambda i: template % i)
 
-    return email_gen_maker
+def random_email_generator(field):
+    def gen():
+        addr = random_unicode(random.randint(5, 15))
+        domain = random_unicode(random.randint(5, 15))
+        return "%s@%s.com" % (addr, domain)
+    return loop(gen)
 
 
 def random_integer_maker(field, low=-2147483647, high=2147483647):
