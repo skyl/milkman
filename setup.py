@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 VERSION = __import__("milkman").__version__
@@ -12,14 +12,15 @@ except:
 
 
 setup(name="milkman",
-    version=VERSION,
-    packages = ["milkman"],
-    author="Wilkes Joiner, Chuck Collins, Patrick Altman",
-    author_email="chuck.collins@gmail.com",
-    install_requires=["docutils>=0.3"],
-    license = "MIT",
-    keywords = "django testing mock stub",
-    description = "Testing django without all the fixtures",
-    url="http://github.com/ccollins/milkman/",
-    long_description=long_description
-)
+      version=VERSION,
+      packages=find_packages(),
+      author="Wilkes Joiner, Chuck Collins, Patrick Altman",
+      author_email="chuck.collins@gmail.com",
+      install_requires=["docutils>=0.3"],
+      license="MIT",
+      keywords="django testing mock stub",
+      description="Testing django without all the fixtures",
+      url="http://github.com/ccollins/milkman/",
+      long_description=long_description,
+      tests_require='django',
+      test_suite='tests.run_tests')

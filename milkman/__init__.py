@@ -1,4 +1,4 @@
-VERSION = (0, 4, 5, "f", 1)  # following PEP 386
+VERSION = (0, 4, 6, "f", 1)  # following PEP 386
 DEV_N = 1
 
 
@@ -11,6 +11,5 @@ def get_version():
         if DEV_N:
             version = "%s.dev%s" % (version, DEV_N)
     return version
-
 
 __version__ = get_version()

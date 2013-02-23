@@ -4,52 +4,55 @@ from django.db.models.fields.related import RelatedField
 from milkman import generators
 
 
+RANDOM = object()
+
+
 class MilkmanRegistry(object):
     default_generators = {}
 
     def __init__(self):
         try:
             self.add_generator(models.BigIntegerField,
-                generators.random_big_integer_maker)
+                               generators.random_big_integer_maker)
         except AttributeError:
             pass  # Only supported in django 1.2+
 
         self.add_generator(models.AutoField,
-            generators.random_auto_field_maker)
+                           generators.random_auto_field_maker)
         self.add_generator(models.BooleanField,
-            generators.random_boolean_maker)
+                           generators.random_boolean_maker)
         self.add_generator(models.CharField,
-            generators.random_string_maker)
+                           generators.random_string_maker)
         self.add_generator(models.CommaSeparatedIntegerField,
-            generators.random_comma_seperated_integer_maker)
+                           generators.random_comma_seperated_integer_maker)
         self.add_generator(models.DateField,
-            generators.random_date_string_maker)
+                           generators.random_date_string_maker)
         self.add_generator(models.DateTimeField,
-            generators.random_datetime_string_maker)
+                           generators.random_datetime_string_maker)
         self.add_generator(models.DecimalField,
-            generators.random_decimal_maker)
+                           generators.random_decimal_maker)
         self.add_generator(models.EmailField,
-            generators.email_generator('user', 'example.com'))
+                           generators.email_generator('user', 'example.com'))
         self.add_generator(models.FloatField,
-            generators.random_float_maker)
+                           generators.random_float_maker)
         self.add_generator(models.IntegerField,
-            generators.random_integer_maker)
+                           generators.random_integer_maker)
         self.add_generator(models.IPAddressField,
-            generators.random_ipaddress_maker)
+                           generators.random_ipaddress_maker)
         self.add_generator(models.NullBooleanField,
-            generators.random_null_boolean_maker)
+                           generators.random_null_boolean_maker)
         self.add_generator(models.PositiveIntegerField,
-            generators.random_positive_integer_maker)
+                           generators.random_positive_integer_maker)
         self.add_generator(models.PositiveSmallIntegerField,
-            generators.random_small_positive_integer_maker)
+                           generators.random_small_positive_integer_maker)
         self.add_generator(models.SlugField,
-            generators.random_string_maker)
+                           generators.random_string_maker)
         self.add_generator(models.SmallIntegerField,
-            generators.random_small_integer_maker)
+                           generators.random_small_integer_maker)
         self.add_generator(models.TextField,
-            generators.random_string_maker)
+                           generators.random_string_maker)
         self.add_generator(models.TimeField,
-            generators.random_time_string_maker)
+                           generators.random_time_string_maker)
         # self.add_generator(models.URLField, generators.random_url_maker)
         # self.add_generator(models.FileField, default_generator)
         # self.add_generator(models.FilePathField, default_generator)
@@ -61,7 +64,7 @@ class MilkmanRegistry(object):
 
     def get(self, cls):
         return self.default_generators.get(cls,
-            lambda f: generators.loop(lambda: ''))
+                                           lambda f: generators.loop(lambda: ''))
 
 
 class MilkTruck(object):
@@ -97,7 +100,7 @@ class MilkTruck(object):
 
         target = self.model_class()
 
-        self.set_explicit_values(target, model_explicit_values)
+        self.set_explicit_values(target, the_milkman, model_explicit_values)
         self.set_local_fields(
             target,
             the_milkman,
@@ -113,12 +116,11 @@ class MilkTruck(object):
             exclude,
             related_explicit_values
         )
-
         return target
 
     def is_m2m(self, field):
         return field in [f.name for f in
-            self.model_class._meta.local_many_to_many]
+                         self.model_class._meta.local_many_to_many]
 
     def has_explicit_through_table(self, field):
         if isinstance(field.rel.through, models.base.ModelBase):  # Django 1.2
@@ -127,10 +129,21 @@ class MilkTruck(object):
             return True
         return False
 
-    def set_explicit_values(self, target, explicit_values):
+    def set_explicit_values(self, target, the_milkman, explicit_values):
         for k, v in explicit_values.iteritems():
-            if not self.is_m2m(k):
-                setattr(target, k, v)
+
+            if self.is_m2m(k):
+                continue
+
+            if v is RANDOM:
+                field = self.model_class._meta.get_field(k)
+                if isinstance(field, RelatedField):
+                    v = field.related.parent_model.objects.order_by('?')[0]
+
+                else:
+                    v = self.generator_for(the_milkman.registry, field).next()
+
+            setattr(target, k, v)
 
     def set_m2m_explicit_values(self, target, explicit_values):
         for k, vs in explicit_values.iteritems():
@@ -189,6 +202,9 @@ class MilkTruck(object):
 
 
 class Milkman(object):
+
+    random = RANDOM
+
     def __init__(self, registry):
         self.trucks = {}
         self.registry = registry
