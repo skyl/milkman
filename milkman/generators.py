@@ -146,7 +146,7 @@ def random_auto_field_maker(field):
 
 
 def random_float():
-    return random.uniform(sys.float_info.min, sys.float_info.max)
+    return random.uniform(-1e10, 1e10)
 
 
 def random_ipaddress_maker(field):
