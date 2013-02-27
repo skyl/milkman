@@ -164,9 +164,10 @@ class FieldValueGeneratorTest(unittest.TestCase):
         self.assertEqual([1, 1], [s for s in random_choice_iterator([1], 2)])
         
     def test_random_float(self):
-        assert random_float() >= sys.float_info.min
-        assert random_float() <= sys.float_info.max
-        assert isinstance(random_float(), float)
+        f = random_float()
+        self.assert_(f >= -1e10)
+        self.assert_(f <= 1e10)
+        self.assert_(isinstance(f, float))
         
     def test_random_ipaddress(self):
         f = models.IPAddressField()
