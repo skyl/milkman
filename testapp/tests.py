@@ -115,7 +115,11 @@ class ModelInheritanceTest(unittest.TestCase):
 class RandomFieldTest(unittest.TestCase):
     def test_required_field(self):
         root = milkman.deliver(Root)
-        assert isinstance(root.my_auto, int)
+        a = root.my_auto
+        self.assert_(
+            isinstance(a, int)
+            or isinstance(a, long)
+        )
         try:
             assert isinstance(root.my_biginteger, type(models.BigIntegerField.MAX_BIGINT))
         except AttributeError:
