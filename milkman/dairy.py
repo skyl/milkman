@@ -190,7 +190,8 @@ class MilkTruck(object):
         # In Oracle, any CharField descendant will be nullable.
         # In other databases, no CharField descendant will be nullable.
         # We can use blank as the arbiter of requiredness for CharFields.
-        if isinstance(field, models.CharField):
+        if isinstance(field, models.CharField)\
+                or isinstance(field, models.FileField):
             return not field.blank
         else:
             # generate if both blank and null are False
