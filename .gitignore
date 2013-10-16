@@ -5,4 +5,5 @@ runtests
 .venv
 /build
 /dist
+/testapp/uploads
 
