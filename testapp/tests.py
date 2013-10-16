@@ -1,3 +1,4 @@
+import datetime
 import unittest
 import types
 import sys
@@ -128,7 +129,7 @@ class RandomFieldTest(unittest.TestCase):
         assert isinstance(root.my_char, str)
         assert isinstance(root.my_commaseperatedinteger, str)
         assert isinstance(root.my_date, str)
-        assert isinstance(root.my_datetime, str)
+        assert isinstance(root.my_datetime, datetime.datetime)
         assert isinstance(root.my_decimal, str)
         assert isinstance(root.my_email, str)
         assert isinstance(root.my_float, float)
