@@ -11,4 +11,3 @@ INSTALLED_APPS = (
     'testapp',
 )
 SECRET_KEY = 'foobar'
-
