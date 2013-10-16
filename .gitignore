@@ -3,3 +3,6 @@
 *.DS_Store
 runtests
 .venv
+/build
+/dist
+/testapp/uploads

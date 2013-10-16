@@ -10,3 +10,4 @@ ROOT_URLCONF = ''
 INSTALLED_APPS = (
     'testapp',
 )
+SECRET_KEY = 'bla'
